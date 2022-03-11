@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const Product = require("../models/Product.model");
+const Product = require("../models/Product");
 const fileUploader = require("../config/cloudinary.config");
 
 /* GET home page */

@@ -1,25 +1,26 @@
 const { Schema, model } = require("mongoose");
 const productSchema = new Schema(
     {
-        name: {
+        title: {
             type: String,
-            required: true,
+            required: true
         },
-        price: Number,
-        isInStock: {
-            type: Boolean,
+        price: {
+            type: Number,
+            required: true
         },
         typeOfProduct: {
             type: String,
-            enum: ["clothing", "accessories", "toys"],
+            required: true,
+            enum: ["clothing", "accessories", "toys"]
         },
         image: {
             type: String,
-            required: true,
+            required: true
         },
     },
     {
-        timestamps: true,
+        timestamps: true
     }
 );
 
