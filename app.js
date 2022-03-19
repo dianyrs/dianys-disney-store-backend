@@ -9,8 +9,12 @@ const mongoose = require("mongoose");
 
 
 const app = express();
-const userRoute = require("./routes/users")
-const authRoute = require("./routes/auth")
+const userRoute = require("./routes/user");
+const authRoute = require("./routes/auth");
+const productRoute = require("./routes/product");
+const cartRoute = require("./routes/cart");
+const orderRoute = require("./routes/order");
+const paymentRoute = require("./routes/payment");
 
 
 // Middleware Setup
@@ -20,8 +24,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
 app.use(express.json());
-app.use("/api/auth", authRoute);
-app.use("/api/users" , )
 
 // CORS
 app.use(function(req, res, next) {
@@ -48,9 +50,15 @@ app.set('view engine', 'json');
 
 // ROUTES
 const home = require('./routes/home');
-const product = require('./routes/product');
+
 
 // Home
 app.use('/', home);
+app.use("/api/auth", authRoute);
+app.use("/api/user" , userRoute);
+app.use("/api/products", productRoute);
+app.use("/api/carts", cartRoute);
+app.use("/api/orders", orderRoute);
+app.use("/api/checkout", paymentRoute);
 
 module.exports = app;

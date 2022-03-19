@@ -12,7 +12,13 @@ const productSchema = new Schema(
         typeOfProduct: {
             type: String,
             required: true,
-            enum: ["clothing", "accessories", "toys"]
+            enum: ["Clothing", "Accessories", "Toys"]
+        },
+        gender: {
+            type: Array
+        },
+        size: {
+            type: String
         },
         image: {
             type: String,
