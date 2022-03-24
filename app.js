@@ -34,7 +34,7 @@ app.use(function(req, res, next) {
 
 //Mongoose
 mongoose
-    .connect("mongodb+srv://disar:disar@cluster0.tgxey.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+    .connect(process.env.MONGODB_URI)
     .then(() => {
         console.log("Connected to Mongo!");
     })
