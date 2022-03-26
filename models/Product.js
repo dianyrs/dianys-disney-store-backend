@@ -9,13 +9,19 @@ const productSchema = new Schema(
             type: Number,
             required: true
         },
+        count: {
+            type: Number,
+            required: true,
+            default: 0
+        },
         typeOfProduct: {
             type: String,
             required: true,
-            enum: ["Clothing", "Accessories", "Toys"]
+            enum: ["Kids Clothing", "Clothing", "Accessories", "Toys", "Costumes"]
         },
         gender: {
-            type: Array
+            type: String,
+            enum: ["Male", "Female"]
         },
         size: {
             type: String

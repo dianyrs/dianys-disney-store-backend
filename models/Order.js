@@ -2,8 +2,8 @@ const { Schema, model } = require("mongoose");
 const orderSchema = new Schema(
     {
         userId: {
-            type: String,
-            required: true
+            type: String
+
         },
         products: [
             {
@@ -18,11 +18,11 @@ const orderSchema = new Schema(
         ],
         amount: {
             type: Number,
-            required: true
+            required: true,
+            default: 0
         },
         address: {
-            type: Object,
-            required: true
+            type: Object
         },
         status: {
             type: String,

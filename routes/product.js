@@ -3,29 +3,28 @@ const Product = require("../models/Product");
 const {verifyToken, verifyTokenAndAuth, verifyTokenAndAdmin} = require("./verifyToken");
 
 //Create
-router.post("/", verifyTokenAndAdmin, async (req,res) => {
+router.post("/", verifyTokenAndAdmin, async (req, res) => {
     const newProduct = new Product(req.body);
 
-    try{
+    try {
         const savedProduct = await newProduct.save();
         res.status(200).json(savedProduct)
-    } catch(err) {
+    } catch (err) {
         res.status(500).json(err);
     }
 })
 
 
 //Update
-router.put("/:id", verifyTokenAndAdmin, async (req,res) => {
-    try{
+router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
+    try {
         const updatedProduct = await Product.findByIdAndUpdate(req.params.id, {
                 $set: req.body,
             },
-            { new: true }
+            {new: true}
         );
         res.status(200).json(updatedProduct);
-    }
-    catch (err) {
+    } catch (err) {
         res.status(500).json(err);
     }
 });
@@ -41,7 +40,7 @@ router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
 });
 
 //Get a single product
-router.get("/find/:id", async (req,res) => {
+router.get("/find/:id", async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
         res.status(200).json(product);
@@ -51,23 +50,40 @@ router.get("/find/:id", async (req,res) => {
 });
 
 //Get all products
-router.get("/all-products", async (req,res) => {
-    const qNew = req.query.new;
-    const qGender = req.query.gender;
+router.get("/all-products", async (req, res) => {
     try {
-        let products;
+        let filter = {},
+            sort = {createdAt: -1};
 
-        if(qNew) {
-            products = await Product.find().sort({createdAt: -1}).limit(5)
-        } else if (qGender) {
-            products = await Product.find({
-                genders: {
-                    $in: [qGender],
-                },
-            });
-        } else {
-            products = await Product.find();
+        if (req.query.category) {
+            filter.typeOfProduct = {
+                $in: [req.query.category]
+            }
         }
+
+        if (req.query.gender) {
+            filter.gender = {
+                $in: [req.query.gender]
+            }
+        }
+
+        if (req.query.size) {
+            filter.size = {
+                $in: [req.query.size]
+            }
+        }
+
+        switch (req.query.sort) {
+            case 'price-low':
+                sort = {price: 'asc'}
+                break;
+            case 'price-high':
+                sort = {price: 'desc'}
+                break;
+        }
+
+        let products = await Product.find(filter).sort(sort)
+
         res.status(200).json(products);
     } catch (err) {
         res.status(500).json(err);

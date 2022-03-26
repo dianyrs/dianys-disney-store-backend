@@ -1,32 +1,44 @@
 const express = require('express');
-const router  = express.Router();
+const router = express.Router();
 const Order = require("../models/Order");
 const {verifyToken, verifyTokenAndAuth, verifyTokenAndAdmin} = require("./verifyToken");
 
 //Create
-router.post("/", verifyToken, async (req,res) => {
+router.post("/", async (req, res) => {
     const newOrder = new Order(req.body);
 
-    try{
+    try {
         const savedOrder = await newOrder.save();
         res.status(200).json(savedOrder)
-    } catch(err) {
+    } catch (err) {
         res.status(500).json(err);
     }
 })
 
 
+//Get One
+router.get("/:id", verifyToken, async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+        res.status(200).json(order);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+
 //Update
-router.put("/:id", verifyTokenAndAdmin, async (req,res) => {
-    try{
-        const updatedOrder = await Order.findByIdAndUpdate(req.params.id, {
+router.put("/:id", async (req, res) => {
+    try {
+        const updatedOrder = await Order.findByIdAndUpdate(
+            req.params.id,
+            {
                 $set: req.body,
             },
-            { new: true }
+            {new: true}
         );
         res.status(200).json(updatedOrder);
-    }
-    catch (err) {
+    } catch (err) {
         res.status(500).json(err);
     }
 });
@@ -42,7 +54,7 @@ router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
 });
 
 //Get User Orders
-router.get("/find/:userId", verifyTokenAndAuth,async (req,res) => {
+router.get("/find/:userId", verifyTokenAndAuth, async (req, res) => {
     try {
         const orders = await Order.find({userId: req.params.userId});
         res.status(200).json(orders);
@@ -52,7 +64,7 @@ router.get("/find/:userId", verifyTokenAndAuth,async (req,res) => {
 });
 
 //Get all
-router.get("/", verifyTokenAndAdmin, async (req,res) => {
+router.get("/", verifyTokenAndAdmin, async (req, res) => {
     try {
         const orders = await Order.find()
         res.status(200).json(orders);
@@ -69,7 +81,7 @@ router.get("/income", verifyTokenAndAdmin, async (req, res) => {
 
     try {
         const income = await Order.aggregate([
-            { $match: { createdAt: {$gte: previousMonth}}},
+            {$match: {createdAt: {$gte: previousMonth}}},
             {
                 $project: {
                     month: {$month: "$createdAt"},
@@ -77,9 +89,9 @@ router.get("/income", verifyTokenAndAdmin, async (req, res) => {
                 },
             },
             {
-                $group:{
-                    _id:"$month",
-                    total:{$sum: "$sales"},
+                $group: {
+                    _id: "$month",
+                    total: {$sum: "$sales"},
                 },
             },
         ]);
